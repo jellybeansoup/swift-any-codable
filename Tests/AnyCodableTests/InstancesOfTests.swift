@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Daniel Farrelly
 // Licensed under BSD 2-Clause "Simplified" License
 //
-// See https://swift.org/LICENSE.txt for license information
+// See the LICENSE file for license information
 
 import Foundation
 import Testing
