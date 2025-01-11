@@ -9,8 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build
-        run: swift build
-
       - name: Tests
-        run: swift test --skip-build --disable-xctest --parallel
+        run: swift test --parallel
