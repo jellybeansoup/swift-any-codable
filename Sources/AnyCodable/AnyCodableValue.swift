@@ -392,55 +392,55 @@ public enum AnyCodableValue: Codable, Hashable, Equatable, CustomDebugStringConv
 				let container = try decoder.singleValueContainer()
 
 				do {
-					self = .date(try container.decode(Date.self))
+					self = .bool(try container.decode(Bool.self))
 				}
 				catch {
 					do {
-						self = .bool(try container.decode(Bool.self))
+						self = .string(try container.decode(String.self))
 					}
 					catch {
 						do {
-							self = .string(try container.decode(String.self))
+							self = .unsignedInteger8(try container.decode(UInt8.self))
 						}
 						catch {
 							do {
-								self = .unsignedInteger8(try container.decode(UInt8.self))
+								self = .unsignedInteger16(try container.decode(UInt16.self))
 							}
 							catch {
 								do {
-									self = .unsignedInteger16(try container.decode(UInt16.self))
+									self = .unsignedInteger32(try container.decode(UInt32.self))
 								}
 								catch {
 									do {
-										self = .unsignedInteger32(try container.decode(UInt32.self))
+										self = .unsignedInteger64(try container.decode(UInt64.self))
 									}
 									catch {
 										do {
-											self = .unsignedInteger64(try container.decode(UInt64.self))
+											self = .integer8(try container.decode(Int8.self))
 										}
 										catch {
 											do {
-												self = .integer8(try container.decode(Int8.self))
+												self = .integer16(try container.decode(Int16.self))
 											}
 											catch {
 												do {
-													self = .integer16(try container.decode(Int16.self))
+													self = .integer32(try container.decode(Int32.self))
 												}
 												catch {
 													do {
-														self = .integer32(try container.decode(Int32.self))
+														self = .integer64(try container.decode(Int64.self))
 													}
 													catch {
 														do {
-															self = .integer64(try container.decode(Int64.self))
+															self = .float(try container.decode(Float.self))
 														}
 														catch {
 															do {
-																self = .float(try container.decode(Float.self))
+																self = .double(try container.decode(Double.self))
 															}
 															catch {
 																do {
-																	self = .double(try container.decode(Double.self))
+																	self = .date(try container.decode(Date.self))
 																}
 																catch {
 																	self = .data(try container.decode(Data.self))

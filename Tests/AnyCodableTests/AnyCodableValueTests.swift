@@ -188,6 +188,340 @@ import Testing
 		#expect(decoded.array[0] == "example")
 	}
 
+	@Test func encodeDecodeDate() throws {
+		let timeIntervalSinceReferenceDate: UInt32 = 758188838 // 2025-01-10 08:00:38 +0000
+		let date = Date(timeIntervalSinceReferenceDate: TimeInterval(timeIntervalSinceReferenceDate))
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["date": AnyCodableValue.date(date)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["date"] == .unsignedInteger32(timeIntervalSinceReferenceDate))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["date": AnyCodableValue.date(date)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["date"] == .date(date))
+	}
+
+	@Test func encodeDecodeBool() throws {
+		let bool = true
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["bool": AnyCodableValue.bool(bool)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["bool"] == .bool(bool))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["bool": AnyCodableValue.bool(bool)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["bool"] == .bool(bool))
+	}
+
+	@Test func encodeDecodeString() throws {
+		let string = "G'day! I'm Jelly, a.k.a. Daniel Farrelly, and you're listening to Independence."
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["string": AnyCodableValue.string(string)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["string"] == .string(string))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["string": AnyCodableValue.string(string)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["string"] == .string(string))
+	}
+
+	@Test func encodeDecodeDouble() throws {
+		let double: Double = 123.456
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["double": AnyCodableValue.double(double)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["double"] == .float(Float(double))) // This is normal, as AnyCodableValue tries decoding float first
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["double": AnyCodableValue.double(double)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["double"] == .double(double)) // This is normal, as AnyCodableValue tries decoding float first
+	}
+
+	@Test func encodeDecodeFloat() throws {
+		let float: Float = 123.456
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["float": AnyCodableValue.float(float)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["float"] == .float(Float(float)))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["float": AnyCodableValue.float(float)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["float"] == .float(Float(float)))
+	}
+
+	@Test func encodeDecodeInteger() throws {
+		let negative = Int.min
+		let positive = Int.max
+
+		// JSON
+
+		var jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer(negative)])
+		var jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .integer64(Int64(negative))) // This is normal, as AnyCodableValue prefers decoding specific-size integers
+
+		jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer(positive)])
+		jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .unsignedInteger64(UInt64(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+
+		// Property List
+
+		var plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer(negative)])
+		var plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .integer64(Int64(negative))) // This is normal, as AnyCodableValue prefers decoding specific-size integers
+
+		plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer(positive)])
+		plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .unsignedInteger64(UInt64(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+	}
+
+	@Test func encodeDecodeInteger8() throws {
+		let negative = Int8.min
+		let positive = Int8.max
+
+		// JSON
+
+		var jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer8(negative)])
+		var jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .integer8(negative))
+
+		jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer8(positive)])
+		jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .unsignedInteger8(UInt8(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+
+		// Property List
+
+		var plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer8(negative)])
+		var plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .integer8(negative))
+
+		plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer8(positive)])
+		plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .unsignedInteger8(UInt8(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+	}
+
+	@Test func encodeDecodeInteger16() throws {
+		let negative = Int16.min
+		let positive = Int16.max
+
+		// JSON
+
+		var jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer16(negative)])
+		var jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .integer16(negative))
+
+		jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer16(positive)])
+		jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .unsignedInteger16(UInt16(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+
+		// Property List
+
+		var plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer16(negative)])
+		var plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .integer16(negative))
+
+		plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer16(positive)])
+		plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .unsignedInteger16(UInt16(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+	}
+
+	@Test func encodeDecodeInteger32() throws {
+		let negative = Int32.min
+		let positive = Int32.max
+
+		// JSON
+
+		var jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer32(negative)])
+		var jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .integer32(negative))
+
+		jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer32(positive)])
+		jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .unsignedInteger32(UInt32(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+
+		// Property List
+
+		var plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer32(negative)])
+		var plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .integer32(negative))
+
+		plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer32(positive)])
+		plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .unsignedInteger32(UInt32(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+	}
+
+	@Test func encodeDecodeInteger64() throws {
+		let negative = Int64.min
+		let positive = Int64.max
+
+		// JSON
+
+		var jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer64(negative)])
+		var jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .integer64(negative))
+
+		jsonData = try JSONEncoder().encode(["integer": AnyCodableValue.integer64(positive)])
+		jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["integer"] == .unsignedInteger64(UInt64(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+
+		// Property List
+
+		var plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer64(negative)])
+		var plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .integer64(negative))
+
+		plistData = try PropertyListEncoder().encode(["integer": AnyCodableValue.integer64(positive)])
+		plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["integer"] == .unsignedInteger64(UInt64(positive))) // This is normal, as AnyCodableValue prefers decoding unsigned integers
+	}
+
+	@Test func encodeDecodeUnsignedInteger() throws {
+		let unsignedInteger: UInt = .max
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["unsignedInteger": AnyCodableValue.unsignedInteger(unsignedInteger)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["unsignedInteger"] == .unsignedInteger64(UInt64(unsignedInteger))) // This is normal, as AnyCodableValue prefers decoding specific-size integers
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["unsignedInteger": AnyCodableValue.unsignedInteger(unsignedInteger)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["unsignedInteger"] == .unsignedInteger64(UInt64(unsignedInteger))) // This is normal, as AnyCodableValue prefers decoding specific-size integers
+	}
+
+	@Test func encodeDecodeUnsignedInteger8() throws {
+		let unsignedInteger8: UInt8 = .max
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["unsignedInteger8": AnyCodableValue.unsignedInteger8(unsignedInteger8)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["unsignedInteger8"] == .unsignedInteger8(unsignedInteger8))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["unsignedInteger8": AnyCodableValue.unsignedInteger8(unsignedInteger8)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["unsignedInteger8"] == .unsignedInteger8(unsignedInteger8))
+	}
+
+	@Test func encodeDecodeUnsignedInteger16() throws {
+		let unsignedInteger16: UInt16 = .max
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["unsignedInteger16": AnyCodableValue.unsignedInteger16(unsignedInteger16)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["unsignedInteger16"] == .unsignedInteger16(unsignedInteger16))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["unsignedInteger16": AnyCodableValue.unsignedInteger16(unsignedInteger16)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["unsignedInteger16"] == .unsignedInteger16(unsignedInteger16))
+	}
+
+	@Test func encodeDecodeUnsignedInteger32() throws {
+		let unsignedInteger32: UInt32 = .max
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["unsignedInteger32": AnyCodableValue.unsignedInteger32(unsignedInteger32)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["unsignedInteger32"] == .unsignedInteger32(unsignedInteger32))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["unsignedInteger32": AnyCodableValue.unsignedInteger32(unsignedInteger32)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["unsignedInteger32"] == .unsignedInteger32(unsignedInteger32))
+	}
+
+	@Test func encodeDecodeUnsignedInteger64() throws {
+		let unsignedInteger64: UInt64 = .max
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["unsignedInteger64": AnyCodableValue.unsignedInteger64(unsignedInteger64)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["unsignedInteger64"] == .unsignedInteger64(unsignedInteger64))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["unsignedInteger64": AnyCodableValue.unsignedInteger64(unsignedInteger64)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["unsignedInteger64"] == .unsignedInteger64(unsignedInteger64))
+	}
+
+	@Test func encodeDecodeData() throws {
+		let data = Data([0x6A, 0x65, 0x6C, 0x6C, 0x79, 0x62, 0x65, 0x61, 0x6E, 0x73, 0x6F, 0x75, 0x70])
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["data": AnyCodableValue.data(data)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["data"] == .string(data.base64EncodedString()))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["data": AnyCodableValue.data(data)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["data"] == .data(data))
+	}
+
+	@Test func encodeDecodeDictionary() throws {
+		let dictionary: [AnyCodableKey: AnyCodableValue] = ["key": .string("value")]
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["dictionary": AnyCodableValue.dictionary(dictionary)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["dictionary"] == .dictionary(dictionary))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["dictionary": AnyCodableValue.dictionary(dictionary)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["dictionary"] == .dictionary(dictionary))
+	}
+
+	@Test func encodeDecodeArray() throws {
+		let array: [AnyCodableValue] = [.unsignedInteger8(1), .string("two"), .float(0.3)]
+
+		// JSON
+
+		let jsonData = try JSONEncoder().encode(["array": AnyCodableValue.array(array)])
+		let jsonDecoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: jsonData)
+		#expect(jsonDecoded["array"] == .array(array))
+
+		// Property List
+
+		let plistData = try PropertyListEncoder().encode(["array": AnyCodableValue.array(array)])
+		let plistDecoded = try PropertyListDecoder().decode([String: AnyCodableValue].self, from: plistData)
+		#expect(plistDecoded["array"] == .array(array))
+	}
+
 	@Test func value() {
 		#expect(AnyCodableValue.date(.distantFuture).value as? Date == .distantFuture)
 		#expect(AnyCodableValue.bool(true).value as? Bool == true)
