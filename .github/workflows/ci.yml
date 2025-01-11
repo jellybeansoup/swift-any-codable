@@ -13,4 +13,4 @@ jobs:
         run: swift build
 
       - name: Tests
-        run: swift test --skip-build --parallel
+        run: swift test --skip-build --disable-xctest --parallel
