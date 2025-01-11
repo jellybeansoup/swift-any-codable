@@ -5,16 +5,25 @@
 
 import Foundation
 
-/// A structure that can be used to decode a collection of any `Element` values
-/// within a data source that is complex or difficult to otherwise parse.
+/// A structure that can decode collections of specific `Element` values from complex or nested data sources.
+///
+/// `InstancesOf` is particularly useful for parsing JSON or other formats where the target type is interspersed with other data.
 public struct InstancesOf<Element: Decodable>: Decodable {
 
+	/// The decoded collection of elements.
 	let elements: [Element]
 
+	/// Initializes a new `InstancesOf` with the elements of the provided collection.
 	init<T: Collection>(_ elements: T) where T.Element == Element {
 		self.elements = Array(elements)
 	}
 
+	/// Initializes a new `InstancesOf` by decoding elements of the specified type from the provided decoder.
+	///
+	/// This initializer attempts to decode elements of type `Element` from either keyed or unkeyed containers.
+	/// If no decodable elements are found, `elements` will be an empty array.
+	///
+	/// - Parameter decoder: The decoder to read data from.
 	public init(from decoder: Decoder) {
 		if let container = try? decoder.container(keyedBy: AnyCodableKey.self) {
 			self.init(container.decode(instancesOf: Element.self))
@@ -31,14 +40,17 @@ public struct InstancesOf<Element: Decodable>: Decodable {
 
 extension InstancesOf: RandomAccessCollection {
 
+	/// The starting index of the collection.
 	public var startIndex: Int {
 		elements.startIndex
 	}
 
+	/// The ending index of the collection
 	public var endIndex: Int {
 		elements.endIndex
 	}
 
+	/// Accesses the element at the specified position.
 	public subscript(position: Int) -> Element {
 		elements[position]
 	}
@@ -53,6 +65,10 @@ extension InstancesOf: Equatable where Element: Equatable {}
 
 extension InstancesOf: Encodable where Element: Encodable {
 
+	/// Encodes the collection of elements into the given encoder.
+	///
+	/// - Parameter encoder: The encoder to write data to.
+	/// - Throws: An error if encoding fails.
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.unkeyedContainer()
 
