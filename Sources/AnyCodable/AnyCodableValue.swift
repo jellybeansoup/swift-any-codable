@@ -67,61 +67,44 @@ public enum AnyCodableValue: Codable, Hashable, Equatable, CustomDebugStringConv
 	/// - Parameter value: The value to represent.
 	/// - Returns: An `AnyCodableValue` if the value is supported, otherwise `nil`.
 	public init?(_ value: Any) {
-		if let value = value as? Date {
+		switch value {
+		case let value as Date:
 			self = .date(value)
-		}
-		else if let value = value as? Bool {
+		case let value as Bool:
 			self = .bool(value)
-		}
-		else if let value = value as? String {
+		case let value as String:
 			self = .string(value)
-		}
-		else if let value = value as? Double {
+		case let value as Double:
 			self = .double(value)
-		}
-		else if let value = value as? Float {
+		case let value as Float:
 			self = .float(value)
-		}
-		else if let value = value as? Int {
+		case let value as Int:
 			self = .integer(value)
-		}
-		else if let value = value as? Int8 {
+		case let value as Int8:
 			self = .integer8(value)
-		}
-		else if let value = value as? Int16 {
+		case let value as Int16:
 			self = .integer16(value)
-		}
-		else if let value = value as? Int32 {
+		case let value as Int32:
 			self = .integer32(value)
-		}
-		else if let value = value as? Int64 {
+		case let value as Int64:
 			self = .integer64(value)
-		}
-		else if let value = value as? UInt {
+		case let value as UInt:
 			self = .unsignedInteger(value)
-		}
-		else if let value = value as? UInt8 {
+		case let value as UInt8:
 			self = .unsignedInteger8(value)
-		}
-		else if let value = value as? UInt16 {
+		case let value as UInt16:
 			self = .unsignedInteger16(value)
-		}
-		else if let value = value as? UInt32 {
+		case let value as UInt32:
 			self = .unsignedInteger32(value)
-		}
-		else if let value = value as? UInt64 {
+		case let value as UInt64:
 			self = .unsignedInteger64(value)
-		}
-		else if let value = value as? Data {
+		case let value as Data:
 			self = .data(value)
-		}
-		else if let value = value as? [AnyCodableKey: AnyCodableValue] {
+		case let value as [AnyCodableKey: AnyCodableValue]:
 			self = .dictionary(value)
-		}
-		else if let value = value as? [AnyCodableValue] {
+		case let value as [AnyCodableValue]:
 			self = .array(value)
-		}
-		else {
+		default:
 			return nil
 		}
 	}
