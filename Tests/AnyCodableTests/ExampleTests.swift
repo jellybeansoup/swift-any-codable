@@ -119,7 +119,7 @@ import AnyCodable
 			init(from decoder: any Decoder) throws {
 				let container = try decoder.container(keyedBy: CodingKeys.self)
 				title = try container.decode(String.self, forKey: .title)
-				issues = Array(try container.decode(InstancesOf<Issue>.self, forKey: .issues))
+				issues = try container.decode(instancesOf: Issue.self, forKey: .issues)
 			}
 
 		}

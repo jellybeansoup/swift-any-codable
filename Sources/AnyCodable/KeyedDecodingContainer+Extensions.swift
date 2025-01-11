@@ -7,6 +7,32 @@ import Foundation
 
 public extension KeyedDecodingContainer {
 
+	/// Decodes an array of the given type for the given key from loosely-structured data.
+	///
+	/// - Note: This method supports heterogenous or loosely-structured data, and will traverse multiple levels of encoded data to retrieve instances that are decodable as the given type.
+	/// - Parameters:
+	///   - type: The type of value to decode.
+	///   - key: The key that the structure containing the decoded values is associated with.
+	/// - Returns: An array of decoded values of the requested type.
+	/// - Throws: `DecodingError.keyNotFound` if `self` does not have an entry for the given key.
+	/// - Throws: `DecodingError.valueNotFound` if `self` has a null entry for the given key.
+	func decode<T: Decodable>(instancesOf type: T.Type, forKey key: Key) throws -> [T] {
+		Array(try decode(InstancesOf<T>.self, forKey: key))
+	}
+
+	/// Decodes an array of the given type for the given key from loosely-structured data.
+	///
+	/// This method returns `nil` if the container does not have a value associated with `key`, or if the value is null. The difference between these states can be distinguished with a `contains(_:)` call.
+	///
+	/// - Note: This method supports heterogenous or loosely-structured data, and will traverse multiple levels of encoded data to retrieve instances that are decodable as the given type.
+	/// - Parameters:
+	///   - type: The type of value to decode.
+	///   - key: The key that the structure containing the decoded values is associated with.
+	/// - Returns: An array of decoded values of the requested type.
+	func decodeIfPresent<T: Decodable>(instancesOf type: T.Type, forKey key: Key) throws -> [T]? {
+		try decodeIfPresent(InstancesOf<T>.self, forKey: key).map { Array($0) }
+	}
+
 	/// Decodes an array of the given type from *all* keys within the container.
 	///
 	/// - Note: This method supports heterogenous or loosely-structured data, and will traverse multiple levels of encoded data to retrieve instances that are decodable as the given type.
